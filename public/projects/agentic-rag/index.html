@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>An Agentic Question-Answering System for Cross-Office Administrative Procedure Integration</title>
+<meta name="description" content="Agentic RAG for NCCU academic affairs: keyword search, whole-page reading, and deterministic routing instead of dense retrieval.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --bg: #FFFFFF;
+    --ink: #1A1A1A;
+    --ink-soft: #4A4A4A;
+    --accent: #2C7695;
+    --accent-ink: #FFFFFF;
+    --line: #E3E6E8;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #14181B;
+      --ink: #ECEDEE;
+      --ink-soft: #B7BDC2;
+      --accent: #6FBBDA;
+      --accent-ink: #0D1A20;
+      --line: #2A3136;
+    }
+  }
+
+  * { box-sizing: border-box; }
+
+  html { font-size: 24px; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Work Sans", "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", Arial, sans-serif;
+    line-height: 1.6;
+    padding-inline: 20px;
+    margin: 0;
+  }
+
+  .wrap {
+    max-width: 1200px;
+    margin-inline: auto;
+    padding-block: 56px 64px;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: clamp(28px, 3.1vw, 46px);
+    font-weight: 600;
+    color: var(--accent);
+    text-align: center;
+    text-wrap: balance;
+    line-height: 1.3;
+  }
+
+  .authors {
+    text-align: center;
+    margin-top: 22px;
+    font-size: 1.05rem;
+    color: var(--ink);
+  }
+  .affiliation {
+    text-align: center;
+    margin-top: 6px;
+    font-size: 0.95rem;
+    color: var(--ink-soft);
+  }
+
+  .project-note {
+    text-align: center;
+    margin: 14px auto 0;
+    max-width: 62ch;
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+  }
+  .project-note a { color: var(--accent); }
+
+  .btn-row {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 32px;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 220px;
+    padding: 10px 22px;
+    border-radius: 6px;
+    background: var(--accent);
+    color: var(--accent-ink);
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .btn:hover { opacity: 0.88; }
+
+  section { margin-top: 52px; }
+
+  h2 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--accent);
+    margin: 0 0 14px;
+  }
+
+  .abstract p {
+    margin: 0;
+    color: var(--ink);
+    font-size: 1rem;
+  }
+
+  .demo-video {
+    display: block;
+    width: 100%;
+    max-width: 960px;
+    margin-inline: auto;
+    aspect-ratio: 16 / 9;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+    background: #000;
+  }
+  .demo-caption {
+    margin: 12px auto 0;
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+  }
+
+  footer {
+    margin-top: 64px;
+    border-top: 1px solid var(--line);
+    padding-top: 20px;
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <h1>An Agentic Question-Answering System for Cross-Office Administrative Procedure Integration</h1>
+  <div class="authors">Yao-Ming Pai</div>
+  <div class="affiliation">Department of Computer Science, National Chengchi University</div>
+  <div class="project-note">
+    This is part of the <a href="https://github.com/NCCU-AI-SYSTEM" target="_blank" rel="noopener">NCCU-AI-SYSTEM</a>
+    project. I was responsible for the Agentic RAG component, and built an Agentic-RAG-specific UI on top of the
+    team's <a href="https://github.com/NCCU-AI-SYSTEM/CourseLangChain-frontend" target="_blank" rel="noopener">shared frontend</a>.
+  </div>
+
+  <div class="btn-row">
+    <a class="btn" href="An_Agentic_Question_Answering_System_for_Cross_Office.pdf" target="_blank" rel="noopener">Report</a>
+    <a class="btn" href="https://github.com/AlanPai777/nccu-agentic-rag" target="_blank" rel="noopener">Code</a>
+    <a class="btn" href="https://github.com/AlanPai777/NCCU-Crawler" target="_blank" rel="noopener">Crawler</a>
+    <a class="btn" href="https://github.com/AlanPai777/CourseLangChain-frontend" target="_blank" rel="noopener">Frontend</a>
+  </div>
+
+  <section>
+    <h2>Abstract</h2>
+    <div class="abstract">
+      <p>
+        Administrative regulations and forms at a university are typically scattered across dozens of
+        office-specific web pages and PDF documents; answering a question such as "how do I apply for a leave
+        of absence" requires assembling the complete procedure, the relevant form, and the office location and
+        contact information for every signature field that form requires, information that, in our setting,
+        spans seven offices across a nine-stop signature chain for a single form. Because the underlying
+        documents in this class of application are often institutionally sensitive and cannot be sent to a
+        closed-source API, we target a system that runs on a model deployable locally; we study it here on a
+        corpus of public university regulations, as a prerequisite for applying the same architecture where
+        documents cannot be shared. Conventional retrieval-augmented generation, built on dense embeddings and
+        a reranker, struggles with this kind of query even under this constraint: a single response routinely
+        took over ten minutes, and tended to reproduce regulatory text rather than the cross-office information
+        the form actually required, while rebuilding the embedding index remained costly as the corpus grew. We
+        present a question-answering system that instead relies on keyword search over the raw corpus and
+        whole-page reading, rather than vector-based retrieval, with the language model itself deciding when to
+        search and which pages to read, replacing the fixed retrieve-then-generate pipeline. In building this
+        system, we found that the model's tool-calling behavior was itself unstable, frequently failing to
+        invoke the tools a query required, a difficulty compounded by using a model small enough to deploy
+        locally rather than a frontier system; we address this by drawing on and integrating several lines of
+        agent-design research, namely chain-of-thought reasoning, ReAct-style action-observation loops,
+        plan-and-solve decomposition, query routing, and self-evaluation, into a single multi-turn architecture.
+        Along the way, we also observed that a sub-decision's reliability under model judgment tends to depend
+        on whether an objectively checkable signal is available for it, rather than on how much prompt
+        engineering is invested in it; resolving such decisions deterministically consistently improved
+        reliability wherever we tested it. We evaluate the resulting system, without fine-tuning the underlying
+        model, across several representative query types (complete procedures, single facts, form downloads,
+        contact lookups, and cross-office compound queries), checking each response against manually-verified
+        expected content such as named contacts, extension numbers, and form IDs, using a closed-source model
+        as an upper-bound reference. Results show that the system reliably covers the required cross-office
+        information, with traceable sources, on Gemma4:31b, a mid-sized, locally-deployed open-weight language
+        model.
+      </p>
+    </div>
+  </section>
+
+  <section id="demo">
+    <h2>Demo</h2>
+    <video class="demo-video" src="demo_video.mp4" controls preload="metadata" playsinline></video>
+    <p class="demo-caption">The system answering 如何辦理休學 (how to apply for a leave of absence) end to end.</p>
+  </section>
+
+  <footer>National Chengchi University · 2026</footer>
+
+</div>
+
+</body>
+</html>

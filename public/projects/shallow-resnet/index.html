@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Does the Value of Residual Connections Depend on Depth? A Parameter-Matched, Multi-Seed Ablation at 8 and 20 Layers on CIFAR-10</title>
+<meta name="description" content="A parameter-matched, three-seed CIFAR-10 ablation: removing skip connections has no detectable effect at 8 layers but costs about 2.5 points at 20.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --bg: #FFFFFF;
+    --ink: #1A1A1A;
+    --ink-soft: #4A4A4A;
+    --accent: #2C7695;
+    --accent-ink: #FFFFFF;
+    --line: #E3E6E8;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #14181B;
+      --ink: #ECEDEE;
+      --ink-soft: #B7BDC2;
+      --accent: #6FBBDA;
+      --accent-ink: #0D1A20;
+      --line: #2A3136;
+    }
+  }
+
+  * { box-sizing: border-box; }
+
+  html { font-size: 24px; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Work Sans", "PingFang TC", "Microsoft JhengHei", Arial, sans-serif;
+    line-height: 1.6;
+    padding-inline: 20px;
+    margin: 0;
+  }
+
+  .wrap {
+    max-width: 1200px;
+    margin-inline: auto;
+    padding-block: 56px 64px;
+  }
+
+  h1 {
+    margin: 0;
+    font-size: clamp(28px, 3.1vw, 46px);
+    font-weight: 600;
+    color: var(--accent);
+    text-align: center;
+    text-wrap: balance;
+    line-height: 1.3;
+  }
+
+  .authors {
+    text-align: center;
+    margin-top: 22px;
+    font-size: 1.05rem;
+    color: var(--ink);
+  }
+  .affiliation {
+    text-align: center;
+    margin-top: 6px;
+    font-size: 0.95rem;
+    color: var(--ink-soft);
+  }
+
+
+  .btn-row {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 32px;
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 220px;
+    padding: 10px 22px;
+    border-radius: 6px;
+    background: var(--accent);
+    color: var(--accent-ink);
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-decoration: none;
+  }
+  .btn:hover { opacity: 0.88; }
+
+  section { margin-top: 52px; }
+
+  h2 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--accent);
+    margin: 0 0 14px;
+  }
+
+  .abstract p {
+    margin: 0;
+    color: var(--ink);
+    font-size: 1rem;
+  }
+
+
+  .caption {
+    margin: 0 0 16px;
+    color: var(--ink-soft);
+    font-size: 0.85rem;
+  }
+
+  .caption.note { margin: 16px 0 0; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+    font-variant-numeric: tabular-nums;
+  }
+  th, td {
+    padding: 10px 14px;
+    text-align: right;
+    border-bottom: 1px solid var(--line);
+  }
+  th:first-child, td:first-child { text-align: left; }
+  th { color: var(--accent); font-weight: 600; }
+  @media (max-width: 640px) {
+    th, td { padding: 8px 6px; font-size: 0.8rem; }
+  }
+
+  footer {
+    margin-top: 64px;
+    border-top: 1px solid var(--line);
+    padding-top: 20px;
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <h1>Does the Value of Residual Connections Depend on Depth? A Parameter-Matched, Multi-Seed Ablation at 8 and 20 Layers on CIFAR-10</h1>
+  <div class="authors">Yao-Ming Pai</div>
+  <div class="affiliation">Department of Computer Science, National Chengchi University</div>
+
+  <div class="btn-row">
+    <a class="btn" href="Does_the_Value_of_Residual_Connections_Depend_on_Depth_.pdf" target="_blank" rel="noopener">Report</a>
+    <a class="btn" href="https://github.com/AlanPai777/shallow-resnet" target="_blank" rel="noopener">Code</a>
+  </div>
+
+  <section>
+    <h2>Abstract</h2>
+    <div class="abstract">
+      <p>
+        Residual connections and batch normalization (BN) are almost always deployed together, and the ablations
+        that isolate the skip connection typically start at depths where optimization difficulty is already expected
+        (18 layers or more); how much a skip connection contributes in the shallower networks that
+        resource-constrained deployments actually use is comparatively uncharacterized. The question arose in our
+        own work from an uncontrolled comparison in a course project, in which two CNNs differing in more than their
+        skip connections reached almost identical CIFAR-10 accuracy (84.88% versus 85.08%, one run each). To turn
+        this into an interpretable measurement, we follow the CIFAR-10 ResNet parameterization of He et al. (depth =
+        6n + 2) with zero-parameter shortcuts, so that the residual-on and residual-off networks have exactly the
+        same parameter count (75,290 at depth 8; 269,722 at depth 20), keep BN on throughout, and train three seeds
+        per cell for 10 epochs with Adam under two recipes that differ only in the learning-rate schedule. The first
+        recipe (constant learning rate, with the checkpoint chosen by loss on the test set, as in the course code)
+        gives a headline advantage of +3.26 points at depth 20, but that figure depends on selecting the epoch on
+        the test set: the same runs give +1.90 points, with an interval that spans zero, when no epoch is selected,
+        largely because one run's final epoch dips. The second recipe anneals the learning rate (cosine) and reports
+        the accuracy after the final epoch, so that the test set influences no decision. Under it, removing the skip
+        connections has no detectable effect at depth 8 (−0.42 points, 95% CI [−3.22, +2.38], Welch p = 0.61) and
+        costs 2.48 points at depth 20 (95% CI [+1.73, +3.24], p = 0.001); the interaction between depth and the skip
+        connection is significant (F(1, 8) = 14.7, p = 0.005 with pooled variance, p = 0.036 without), a
+        difference-in-differences of +2.90 points. The runs with a constant learning rate had suggested that the
+        depth-20 advantage was a convergence-speed effect that narrows with training; under annealing it does not:
+        the gap stays at 2.3 to 2.9 points over the last four epochs and appears in training loss (0.463 versus
+        0.547) as well as validation loss, so it is an optimization advantage that survives to the end of a 10-epoch
+        annealed schedule, although whether a plain network would catch up under a much longer schedule remains
+        untested. A per-layer gradient-norm diagnostic shows no early-layer vanishing in either network; the
+        residual network has a flatter cross-layer profile, more so at depth 20. Because the design contains only
+        two depths, BN is never switched off, and three seeds give limited power, we read the result as evidence
+        that the marginal value of a skip connection differs between these two depths, not as a localization of a
+        threshold. Code and raw per-run results are available at: https://github.com/AlanPai777/shallow-resnet.
+      </p>
+    </div>
+  </section>
+
+
+  <section>
+    <h2>Main result</h2>
+    <p class="caption">
+      Final-epoch CIFAR-10 test accuracy (%), mean &plusmn; SD over three seeds, after 10 epochs with a cosine
+      learning-rate schedule and no checkpoint selection. Batch normalization is on throughout, and the two networks
+      have identical parameter counts at each depth (75,290 at 8 layers; 269,722 at 20).
+    </p>
+    <table>
+      <thead>
+        <tr><th>Depth</th><th>With skip</th><th>Without skip</th><th>Difference (with &minus; without), 95% CI</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>8 layers</td><td>74.38 &plusmn; 1.20</td><td>74.80 &plusmn; 0.28</td><td>&minus;0.42 [&minus;3.22, +2.38]</td></tr>
+        <tr><td>20 layers</td><td>82.63 &plusmn; 0.24</td><td>80.15 &plusmn; 0.37</td><td>+2.48 [+1.73, +3.24]</td></tr>
+      </tbody>
+    </table>
+    <p class="caption note">
+      The depth-by-skip interaction is significant (+2.90 points; p = 0.005 with pooled variance, p = 0.036
+      without). With only two depths, three seeds per cell and batch normalization never switched off, this shows
+      that the skip connection's value differs between these two depths; it does not locate a threshold, and it
+      does not show that the depth-20 gap would persist under a much longer schedule.
+    </p>
+  </section>
+
+  <footer>National Chengchi University · 2026</footer>
+
+</div>
+
+</body>
+</html>
